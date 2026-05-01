@@ -41,7 +41,7 @@ Covered outbound paths:
 - `graphify clone` Git remotes
 - Neo4j push endpoints
 
-For regulated deployments, combine these application controls with host firewall rules, proxy enforcement, DLP, and CI egress restrictions. See `docs/ENTERPRISE_ROLLOUT.md`.
+For regulated deployments, combine these application controls with host firewall rules, proxy enforcement, DLP, and build-host egress restrictions. See `docs/ENTERPRISE_ROLLOUT.md`.
 
 ### Threat Surface
 

@@ -357,18 +357,8 @@ def gemini_uninstall(project_dir: Path | None = None) -> None:
     _uninstall_gemini_hook(project_dir or Path("."))
 
 
-_VSCODE_INSTRUCTIONS_MARKER = "## graphify"
-_VSCODE_INSTRUCTIONS_SECTION = """\
-## graphify
-
-Before answering architecture or codebase questions, read `graphify-out/GRAPH_REPORT.md` if it exists.
-If `graphify-out/wiki/index.md` exists, navigate it for deep questions.
-Type `/graphify` in Copilot Chat to build or update the knowledge graph.
-"""
-
-
 def vscode_install(project_dir: Path | None = None) -> None:
-    """Install graphify skill for VS Code Copilot Chat + write .github/copilot-instructions.md."""
+    """Install graphify skill for VS Code Copilot Chat."""
     skill_src = Path(__file__).parent / "skill-vscode.md"
     if not skill_src.exists():
         skill_src = Path(__file__).parent / "skill-copilot.md"
@@ -378,26 +368,13 @@ def vscode_install(project_dir: Path | None = None) -> None:
     (skill_dst.parent / ".graphify_version").write_text(__version__, encoding="utf-8")
     print(f"  skill installed  ->  {skill_dst}")
 
-    instructions = (project_dir or Path(".")) / ".github" / "copilot-instructions.md"
-    instructions.parent.mkdir(parents=True, exist_ok=True)
-    if instructions.exists():
-        content = instructions.read_text(encoding="utf-8")
-        if _VSCODE_INSTRUCTIONS_MARKER in content:
-            print(f"  {instructions}  ->  already configured (no change)")
-        else:
-            instructions.write_text(content.rstrip() + "\n\n" + _VSCODE_INSTRUCTIONS_SECTION, encoding="utf-8")
-            print(f"  {instructions}  ->  graphify section added")
-    else:
-        instructions.write_text(_VSCODE_INSTRUCTIONS_SECTION, encoding="utf-8")
-        print(f"  {instructions}  ->  created")
-
     print()
-    print("VS Code Copilot Chat configured. Type /graphify in the chat panel to build the graph.")
+    print("VS Code Copilot Chat skill configured. Type /graphify in the chat panel to build the graph.")
     print("Note: for GitHub Copilot CLI (terminal), use: graphify copilot install")
 
 
 def vscode_uninstall(project_dir: Path | None = None) -> None:
-    """Remove graphify VS Code Copilot Chat skill and .github/copilot-instructions.md section."""
+    """Remove graphify VS Code Copilot Chat skill."""
     skill_dst = Path.home() / ".copilot" / "skills" / "graphify" / "SKILL.md"
     if skill_dst.exists():
         skill_dst.unlink()
@@ -410,20 +387,6 @@ def vscode_uninstall(project_dir: Path | None = None) -> None:
             d.rmdir()
         except OSError:
             break
-
-    instructions = (project_dir or Path(".")) / ".github" / "copilot-instructions.md"
-    if not instructions.exists():
-        return
-    content = instructions.read_text(encoding="utf-8")
-    if _VSCODE_INSTRUCTIONS_MARKER not in content:
-        return
-    cleaned = re.sub(r"\n*## graphify\n.*?(?=\n## |\Z)", "", content, flags=re.DOTALL).rstrip()
-    if cleaned:
-        instructions.write_text(cleaned + "\n", encoding="utf-8")
-        print(f"  graphify section removed from {instructions}")
-    else:
-        instructions.unlink()
-        print(f"  {instructions}  ->  deleted (was empty after removal)")
 
 
 _ANTIGRAVITY_RULES_PATH = Path(".agents") / "rules" / "graphify.md"
@@ -1028,7 +991,7 @@ def main() -> None:
         print("  aider uninstall         remove graphify section from AGENTS.md")
         print("  copilot install         copy graphify skill to ~/.copilot/skills (GitHub Copilot CLI)")
         print("  copilot uninstall       remove graphify skill from ~/.copilot/skills")
-        print("  vscode install          configure VS Code Copilot Chat (skill + .github/copilot-instructions.md)")
+        print("  vscode install          copy graphify skill to ~/.copilot/skills (VS Code Copilot Chat)")
         print("  vscode uninstall        remove VS Code Copilot Chat configuration")
         print("  claw install            write graphify section to AGENTS.md (OpenClaw)")
         print("  claw uninstall          remove graphify section from AGENTS.md")

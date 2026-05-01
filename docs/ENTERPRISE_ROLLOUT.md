@@ -5,9 +5,9 @@ This checklist is the minimum bar for deploying graphify inside a mega-bank or s
 ## Required gates before rollout
 
 1. Independent security review by AppSec and platform security, with sign-off outside the implementation team.
-2. SCA and SAST in CI for every pull request, including dependency vulnerability review and static analysis findings triage.
-3. Signed build provenance for every release artifact, with attestations verified before promotion to an internal package registry.
-4. Network egress controls on endpoints, CI runners, and developer workstations.
+2. SCA and SAST before internal promotion, including dependency vulnerability review and static analysis findings triage.
+3. Signed build provenance for release artifacts when required by internal policy, with signatures verified before promotion to an internal package registry.
+4. Network egress controls on endpoints, build hosts, and developer workstations.
 5. Internal package distribution from an approved mirror or artifact registry.
 6. Pilot deployment with endpoint telemetry from enterprise controls only, not from graphify itself.
 
@@ -36,7 +36,7 @@ graphify should be run through the approved assistant platform only:
 - Claude hosted on Amazon Bedrock through the internal enterprise gateway.
 - GitHub Copilot Enterprise through the bank-approved tenant and proxy path.
 
-Direct public LLM API backends have been removed from this build. Do not add API keys for public Anthropic, OpenAI-compatible, or other public model endpoints. Any future direct gateway integration must be implemented as an internal-host-only connector, covered by egress allowlisting, SAST, SCA, threat modeling, and independent review.
+Direct public LLM API backends have been removed from this build. Do not add API keys for public Anthropic, OpenAI-compatible, or other public model endpoints. Any future direct gateway integration must be implemented as an internal-host-only connector, covered by egress allowlisting, static analysis, dependency review, threat modeling, and independent review.
 
 ## Network egress controls
 
@@ -68,26 +68,25 @@ Feature-specific approvals:
 | Neo4j push | Disabled unless allowlisted | Internal database host and credential handling review |
 | Direct public LLM APIs | Removed | Do not enable |
 
-## Build and release provenance
+## Build and release controls
 
-Use the release provenance workflow for tag builds. It creates Python distribution artifacts, a CycloneDX SBOM, and GitHub artifact attestations. Before promotion to the internal package registry:
+Build and promote artifacts only through the bank-approved release process. Before promotion to the internal package registry:
 
 1. Verify the release tag is protected and signed according to bank policy.
-2. Verify the GitHub build provenance attestation for every `dist/*` artifact.
-3. Verify the SBOM attestation and archive the SBOM with the release.
-4. Rebuild in the bank-controlled CI environment if policy requires hermetic internal builds.
+2. Verify build provenance for every promoted artifact when required by bank policy.
+3. Generate and archive an SBOM with the release when required by bank policy.
+4. Rebuild in the bank-controlled build environment if policy requires hermetic internal builds.
 5. Publish only through the approved internal package registry.
 
 ## SCA and SAST
 
-The security workflow runs:
+Run the local verification commands in this repository and mirror them with your enterprise scanners:
 
-- CodeQL for Python semantic analysis.
 - Bandit for Python SAST.
 - pip-audit for Python dependency vulnerabilities.
-- CycloneDX SBOM generation.
+- gitleaks or the bank-approved secrets scanner.
 
-For bank rollout, mirror these controls in the internal CI system and add any required enterprise scanners. Critical findings are rollout blockers. High findings require documented risk acceptance from AppSec.
+Critical findings are rollout blockers. High findings require documented risk acceptance from AppSec.
 
 ## Data handling
 
@@ -105,8 +104,8 @@ Do not upload generated graph artifacts to public services. Apply retention, enc
 
 Before merging enterprise rollout changes:
 
-- Require CODEOWNERS review from AppSec and platform security teams.
-- Require passing CI, security workflow, and provenance dry run where applicable.
+- Require AppSec and platform security review.
+- Require passing local verification and enterprise security scans.
 - Require explicit review of network egress changes.
 - Require dependency lockfile or internal artifact mirror review.
 - Require a release note describing any new outbound connection or third-party dependency.

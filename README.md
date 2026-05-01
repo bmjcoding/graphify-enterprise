@@ -4,7 +4,7 @@
 
 # Graphify Enterprise
 
-Graphify Enterprise is a hardened fork of graphify for organizations that need a local knowledge graph over code, documents, papers, images, and transcripts while keeping model access, network egress, build provenance, and security review under enterprise control.
+Graphify Enterprise is a hardened fork of graphify for organizations that need a local knowledge graph over code, documents, papers, images, and transcripts while keeping model access, network egress, and security review under enterprise control.
 
 The tool turns a folder of source and reference material into:
 
@@ -26,8 +26,8 @@ This fork keeps the core graphify workflow and adds controls expected before a r
 - `GRAPHIFY_DISABLE_NETWORK=1` offline mode.
 - URL ingestion, repository clone, `yt-dlp`, redirects, and Neo4j push are all covered by graphify-controlled egress checks.
 - Generated HTML graph output is self-contained and does not load remote visualization assets.
-- SAST, SCA, SBOM, Dependabot, PR checklist, and signed build provenance workflows are included.
-- Public badge/logo/tracking-style remote assets were removed from primary documentation and generated visualization paths.
+- Local verification commands and a security scan script are included for controlled review before internal promotion.
+- Public promotional and remote-rendered documentation assets were removed from primary documentation and generated visualization paths.
 
 This does not make any software "no risk." For broad deployment, run your own AppSec review, internal SCA/SAST, endpoint egress enforcement, DLP review, and signed artifact promotion.
 
@@ -72,7 +72,7 @@ Then promote the built wheel from `dist/` only after:
 - SCA/SAST findings are reviewed.
 - `gitleaks` or your enterprise secrets scanner passes.
 - SBOM is archived with the release.
-- Build provenance attestation is verified.
+- Build provenance is verified if required by your internal release process.
 - The artifact is published to the internal package registry.
 
 Evaluation install from the public repo:
@@ -171,17 +171,9 @@ Treat graph outputs as confidential source-derived work product:
 
 Do not upload graph artifacts to public systems. Apply the same retention, encryption, DLP, and access-control policies that apply to the source repositories and documents being analyzed.
 
-## CI And Release Controls
+## Local Verification
 
-Included workflows:
-
-- `.github/workflows/ci.yml` - unit tests on supported branches.
-- `.github/workflows/security.yml` - CodeQL, Bandit, pip-audit, and CycloneDX SBOM generation.
-- `.github/workflows/release-provenance.yml` - build artifacts plus GitHub build provenance and SBOM attestations.
-- `.github/dependabot.yml` - dependency and GitHub Actions update monitoring.
-- `.github/pull_request_template.md` - enterprise readiness checklist.
-
-Local verification:
+Run these checks before promoting a reviewed commit into an internal package registry:
 
 ```bash
 python3 -m compileall graphify
@@ -197,9 +189,9 @@ git diff --check
 Before broad deployment:
 
 1. Mirror this repo into internal source control.
-2. Set CODEOWNERS for AppSec and platform security approval.
+2. Require AppSec and platform security approval.
 3. Run enterprise SCA/SAST and secrets scanning.
-4. Verify signed build provenance for the release artifact.
+4. Verify signed build provenance if required by your internal release process.
 5. Publish through the internal package registry.
 6. Enforce endpoint or proxy egress policy matching `GRAPHIFY_ALLOWED_HOSTS`.
 7. Pilot with a limited group before all-employee rollout.
@@ -208,7 +200,7 @@ See `docs/ENTERPRISE_ROLLOUT.md` for the detailed gate list.
 
 ## Relationship To Upstream
 
-This repository is an enterprise-hardening fork of `safishamsi/graphify`. It preserves the core local knowledge-graph workflow while removing direct public LLM backends and adding enterprise controls around telemetry posture, egress, CI security scanning, build provenance, and deployment guidance.
+This repository is an enterprise-hardening fork of `safishamsi/graphify`. It preserves the core local knowledge-graph workflow while removing direct public LLM backends and adding enterprise controls around telemetry posture, egress, local security verification, and deployment guidance.
 
 ## License
 

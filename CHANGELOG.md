@@ -8,7 +8,6 @@ Full release notes with details on each version: [GitHub Releases](https://githu
 - Security: remove direct public LLM API backends from the enterprise-safe build; model traffic must route through an approved managed assistant platform.
 - Security: add fail-closed enterprise egress controls via `GRAPHIFY_ENTERPRISE`, `GRAPHIFY_EGRESS_POLICY`, `GRAPHIFY_ALLOWED_HOSTS`, and `GRAPHIFY_DISABLE_NETWORK`.
 - Security: make `graph.html` self-contained with no remote visualization CDN.
-- Security: add CI security workflow for CodeQL, Bandit SAST, pip-audit SCA, CycloneDX SBOM generation, Dependabot, and signed release provenance attestations.
 
 ## 0.6.1 (2026-05-01)
 
@@ -110,7 +109,7 @@ Full release notes with details on each version: [GitHub Releases](https://githu
 
 ## 0.4.15 (2026-04-15)
 
-- Feat: VS Code Copilot Chat support — `graphify vscode install` installs a Python-only skill (works on Windows PowerShell) and writes `.github/copilot-instructions.md` for always-on graph context (#206)
+- Feat: VS Code Copilot Chat support — `graphify vscode install` installs a Python-only skill (works on Windows PowerShell) for always-on graph context (#206)
 - Fix: OpenCode plugin path used backslashes on Windows causing duplicate entries in `opencode.json` — now uses forward slashes via `.as_posix()` (#378)
 - Fix: Gemini CLI on Windows now installs skill to `~/.agents/skills/` (higher priority) instead of `~/.gemini/skills/` (#368)
 - Fix: `.mjs` and `.ejs` files now recognised by the AST extractor as JavaScript (#365, #372)
@@ -140,7 +139,7 @@ Full release notes with details on each version: [GitHub Releases](https://githu
 ## 0.4.12 (2026-04-13)
 
 - Add: Kiro IDE/CLI support — `graphify kiro install` writes `.kiro/skills/graphify/SKILL.md` (invoked via `/graphify`) and `.kiro/steering/graphify.md` (`inclusion: always` — always-on context before every conversation) (#319, #321)
-- Fix: cache `file_hash()` now uses the path relative to project root instead of the resolved absolute path — cache entries are now portable across machines, CI runners, and different checkout directories (#311)
+- Fix: cache `file_hash()` now uses the path relative to project root instead of the resolved absolute path — cache entries are now portable across machines, build runners, and different checkout directories (#311)
 
 ## 0.4.11 (2026-04-13)
 
@@ -451,11 +450,9 @@ Full release notes with details on each version: [GitHub Releases](https://githu
 
 ## 0.1.1 (2026-04-04)
 
-- Add: CI badge to README (GitHub Actions, Python 3.10 + 3.12)
 - Add: ARCHITECTURE.md - pipeline overview, module table, extraction schema, how to add a language
 - Add: SECURITY.md - threat model, mitigations, vulnerability reporting
 - Add: `worked/` directory with eval reports (karpathy-repos 71.5x benchmark, httpx, mixed-corpus)
-- Fix: pytest not found in CI - added explicit `pip install pytest` step
 - Fix: README test count (163 → 212), language table, worked examples links
 - Docs: README reframed as Claude Code skill; Karpathy problem → graphify answer framing
 

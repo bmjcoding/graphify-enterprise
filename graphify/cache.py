@@ -21,7 +21,7 @@ def file_hash(path: Path, root: Path = Path(".")) -> str:
     """SHA256 of file contents + path relative to root.
 
     Using a relative path (not absolute) makes cache entries portable across
-    machines and checkout directories, so shared caches and CI work correctly.
+    machines, checkout directories, and shared build environments.
     Falls back to the resolved absolute path if the file is outside root.
 
     For Markdown files (.md), only the body below the YAML frontmatter is hashed,
